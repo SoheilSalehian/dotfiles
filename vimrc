@@ -29,7 +29,7 @@ syntax on
 
 " Change leader to a comma because the backslash is too far away
 " That means all \x commands turn into ,x
-" The mapleader has to be set before vundle starts loading all 
+" The mapleader has to be set before vundle starts loading all
 " the plugins.
 let mapleader=","
 
@@ -116,3 +116,149 @@ set smartcase       " ...unless we type a capital
 
 " ================ Custom Settings ========================
 so ~/.yadr/vim/settings.vim
+
+set background=dark
+colorscheme solarized
+set guifont=Consolas:h13
+" set cursorline
+set incsearch
+let g:yadr_disable_solarized_enhancements = 1
+
+autocmd Filetype html setlocal ts=2 sts=2 sw=2
+autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
+autocmd Filetype javascript setlocal ts=2 sts=2 sw=2
+autocmd Filetype python setlocal ts=2 sts=2 sw=2
+
+let g:gitgutter_eager = 0
+let g:ctrlp_open_new_file = 'v'
+let smooth_scroll_duration=50
+noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
+noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
+noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
+noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
+" Moving lines up/down
+filetype plugin indent on
+nnoremap <S-Up> :m-2<CR>
+nnoremap <S-Down> :m+<CR>
+inoremap <S-Up> <Esc>:m-2<CR>
+inoremap <S-Down> <Esc>:m+<CR>
+" fugitive git bindings
+nnoremap <space>ga :Git add %:p<CR><CR>
+nnoremap <space>gs :Gstatus<CR>
+nnoremap <space>gc :Gcommit -v -q<CR>
+nnoremap <space>gt :Gcommit -v -q %:p<CR>
+nnoremap <space>gd :Gdiff<CR>
+nnoremap <space>ge :Gedit<CR>
+nnoremap <space>gr :Gread<CR>
+nnoremap <space>gw :Gwrite<CR><CR>
+nnoremap <space>gl :silent! Glog<CR>:bot copen<CR>
+nnoremap <space>gp :Ggrep<Space>
+nnoremap <space>gm :Gmove<Space>
+nnoremap <space>gb :Git branch<Space>
+nnoremap <space>go :Git checkout<Space>
+
+autocmd FileType python nnoremap <buffer> <F9> :exec '!python' shellescape(@%, 1)<cr>
+nmap <silent> <A-Up> :wincmd k<CR>
+nmap <silent> <A-Down> :wincmd j<CR>
+nmap <silent> <A-Left> :wincmd h<CR>
+nmap <silent> <A-Right> :wincmd l<CR>
+
+nnoremap <leader>w :NERDTree<CR>
+
+nnoremap <leader>r :call RunTestFile()<CR>
+nnoremap <leader>g :call RunGoFile()<CR>
+function! RunTestFile()
+    if(&ft=='python')
+        exec ":!" . ". venv/bin/activate; nosetests " .bufname('%') . " --stop"
+    endif
+endfunction
+
+function! RunGoFile()
+    if(&ft=='go')
+        exec ":new|0read ! go run " . bufname('%')
+    endif
+endfunction
+
+let g:ctrlp_match_window = 'bottom,order:ttb'
+
+function! <SID>StripTrailingWhitespaces()
+    " save last search & cursor position
+    let _s=@/
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    let @/=_s
+    call cursor(l, c)
+endfunction
+
+function! <SID>CleanFile()
+    " Preparation: save last search, and cursor position.
+    let _s=@/
+    let l = line(".")
+    let c = col(".")
+    " Do the business:
+    %!git stripspace
+    " Clean up: restore previous search history, and cursor position
+    let @/=_s
+    call cursor(l, c)
+endfunction
+
+"Python specific
+autocmd FileType python nnoremap <leader>b :!python2.7 %<CR>
+set expandtab
+set shiftwidth=2
+set softtabstop=2
+
+"Javascript
+
+"Go specific
+"
+autocmd Filetype go setlocal ts=2 sts=2 sw=2
+au Filetype go nnoremap <leader>r :GoRun <CR>
+au Filetype go nnoremap <leader>b :GoBuild <CR>
+let g:go_fmt_command = "goimports"
+"Window switching
+function! MarkWindowSwap()
+    let g:markedWinNum = winnr()
+endfunction
+
+function! DoWindowSwap()
+    "Mark destination
+    let curNum = winnr()
+    let curBuf = bufnr( "%" )
+    exe g:markedWinNum . "wincmd w"
+    "Switch to source and shuffle dest->source
+    let markedBuf = bufnr( "%" )
+    "Hide and open so that we aren't prompted and keep history
+    exe 'hide buf' curBuf
+    "Switch to dest and shuffle source->dest
+    exe curNum . "wincmd w"
+    "Hide and open so that we aren't prompted and keep history
+    exe 'hide buf' markedBuf
+endfunction
+
+nmap <leader>sw :call MarkWindowSwap()<CR>
+nmap <leader>mw :call DoWindowSwap()<CR>
+
+"jsbeautify
+autocmd FileType javascript noremap <leader>e  :call JsBeautify()<cr>
+autocmd FileType html noremap <leader>e  :call HtmlBeautify()<cr>
+autocmd FileType css noremap <leader>e :call  CSSBeautify()<cr>
+let g:config_Beautifier = {}
+let g:config_Beautifier['js'] = {}
+let g:config_Beautifier['js'].indent_size = '2'
+
+
+"latex-box
+"
+filetype plugin indent on
+let g:tex_flavor = 'latex'
+let g:tex_nine_config = {
+        \'compiler': 'pdflatex',
+        \'viewer': {'app':'open', 'target':'pdf'},
+\}
+
+autocmd Filetype tex noremap <buffer><silent> <LocalLeader>b :call tex_nine#Compile(0, b:tex_nine_config)<CR>
+autocmd Filetype tex noremap <buffer><silent> <LocalLeader>B :call tex_nine#Compile(1, b:tex_nine_config)<CR>
+autocmd Filetype tex noremap <buffer><silent> <LocalLeader>r :call tex_nine#ViewDocument()<CR>
+
