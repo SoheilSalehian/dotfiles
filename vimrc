@@ -262,3 +262,13 @@ autocmd Filetype tex noremap <buffer><silent> <LocalLeader>b :call tex_nine#Comp
 autocmd Filetype tex noremap <buffer><silent> <LocalLeader>B :call tex_nine#Compile(1, b:tex_nine_config)<CR>
 autocmd Filetype tex noremap <buffer><silent> <LocalLeader>r :call tex_nine#ViewDocument()<CR>
 
+function! Multiple_cursors_before()
+  exe 'NeoCompleteLock'
+  echo 'Disabled autocomplete'
+endfunction
+
+function! Multiple_cursors_after()
+  exe 'NeoCompleteUnlock'
+  echo 'Enabled autocomplete'
+endfunction
+
