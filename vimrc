@@ -122,7 +122,7 @@ colorscheme solarized
 set guifont=Consolas:h13
 " set cursorline
 set incsearch
-let g:yadr_disable_solarized_enhancements = 1
+let g:yadr_disable_solarized_enhancements = 0
 
 autocmd Filetype html setlocal ts=2 sts=2 sw=2
 autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
@@ -205,6 +205,7 @@ endfunction
 
 "Python specific
 autocmd FileType python nnoremap <leader>b :!python2.7 %<CR>
+autocmd FileType python nnoremap <leader>j :%!python -m json.tool<CR>
 set expandtab
 set shiftwidth=2
 set softtabstop=2
@@ -248,6 +249,29 @@ let g:config_Beautifier = {}
 let g:config_Beautifier['js'] = {}
 let g:config_Beautifier['js'].indent_size = '2'
 
+let g:syntastic_mode_map = { 'mode': 'active',
+                            \ 'active_filetypes': ['python', 'javascript'],
+                            \ 'passive_filetypes': [] }
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_javascript_checkers = ['eslint']
+
+function! StrTrim(txt)
+  return substitute(a:txt, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
+endfunction
+
+let b:syntastic_javascript_eslint_exec = StrTrim(system('npm-which eslint'))
+
+let g:autotagDisabled=1
+let g:fixmyjs_rc_path = '~/Projects/OL/Platform/.eslintrc'
+noremap <Leader><Leader>f :Fixmyjs<CR>
 
 "latex-box
 "
