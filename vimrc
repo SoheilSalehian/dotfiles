@@ -130,8 +130,10 @@ autocmd Filetype javascript setlocal ts=2 sts=2 sw=2
 autocmd Filetype python setlocal ts=2 sts=2 sw=2
 
 let g:gitgutter_eager = 0
+let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_open_new_file = 'v'
 let smooth_scroll_duration=50
+
 noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
 noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
 noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
@@ -205,7 +207,6 @@ endfunction
 
 "Python specific
 autocmd FileType python nnoremap <leader>b :!python2.7 %<CR>
-autocmd FileType python nnoremap <leader>j :%!python -m json.tool<CR>
 set expandtab
 set shiftwidth=2
 set softtabstop=2
@@ -240,6 +241,7 @@ endfunction
 
 nmap <leader>sw :call MarkWindowSwap()<CR>
 nmap <leader>mw :call DoWindowSwap()<CR>
+nmap <leader>j :%!python -m json.tool<CR>
 
 "jsbeautify
 autocmd FileType javascript noremap <leader>e  :call JsBeautify()<cr>
@@ -268,10 +270,7 @@ function! StrTrim(txt)
 endfunction
 
 let b:syntastic_javascript_eslint_exec = StrTrim(system('npm-which eslint'))
-
-let g:autotagDisabled=1
-let g:fixmyjs_rc_path = '~/Projects/OL/Platform/.eslintrc'
-noremap <Leader><Leader>f :Fixmyjs<CR>
+let g:eslint_onwrite = 1
 
 "latex-box
 "
@@ -282,9 +281,9 @@ let g:tex_nine_config = {
         \'viewer': {'app':'open', 'target':'pdf'},
 \}
 
-autocmd Filetype tex noremap <buffer><silent> <LocalLeader>b :call tex_nine#Compile(0, b:tex_nine_config)<CR>
-autocmd Filetype tex noremap <buffer><silent> <LocalLeader>B :call tex_nine#Compile(1, b:tex_nine_config)<CR>
-autocmd Filetype tex noremap <buffer><silent> <LocalLeader>r :call tex_nine#ViewDocument()<CR>
+autocmd Filetype tex noremap <buffer><silent> <LocalLeader>k :call tex_nine#Compile(0, b:tex_nine_config)<CR>
+" autocmd Filetype tex noremap <buffer><silent> <LocalLeader>l :call tex_nine#Compile(1, b:tex_nine_config)<CR>
+autocmd Filetype tex noremap <buffer><silent> <LocalLeader>l :call tex_nine#ViewDocument()<CR>
 
 function! Multiple_cursors_before()
   exe 'NeoCompleteLock'
