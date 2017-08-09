@@ -132,6 +132,7 @@ autocmd Filetype python setlocal ts=2 sts=2 sw=2
 let g:gitgutter_eager = 0
 let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_open_new_file = 'v'
+let g:ctrlp_working_path_mode = '0'
 let smooth_scroll_duration=50
 
 noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
