@@ -118,11 +118,11 @@ set smartcase       " ...unless we type a capital
 so ~/.yadr/vim/settings.vim
 
 set background=dark
-colorscheme solarized
+color solarized8_dark
 set guifont=Consolas:h13
 " set cursorline
 set incsearch
-let g:yadr_disable_solarized_enhancements = 0
+let g:yadr_disable_solarized_enhancements = 1
 
 autocmd Filetype html setlocal ts=2 sts=2 sw=2
 autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
@@ -134,6 +134,7 @@ let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_open_new_file = 'v'
 let g:ctrlp_working_path_mode = '0'
 let smooth_scroll_duration=50
+let g:neoformat_try_formatprg = 1
 
 noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
 noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
@@ -183,6 +184,7 @@ function! RunGoFile()
 endfunction
 
 let g:ctrlp_match_window = 'bottom,order:ttb'
+let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
 function! <SID>StripTrailingWhitespaces()
     " save last search & cursor position
@@ -296,3 +298,12 @@ function! Multiple_cursors_after()
   echo 'Enabled autocomplete'
 endfunction
 
+augroup NeoformatAutoFormat
+    autocmd!
+    autocmd FileType javascript,javascript.jsx setlocal formatprg=prettier\
+                                                            \--stdin\
+                                                            \--print-width\ 80\
+                                                            \--single-quote\
+                                                            \--trailing-comma\ es5
+    autocmd BufWritePre *.js,*.jsx Neoformat
+augroup END
